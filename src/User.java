@@ -2,16 +2,9 @@ package src;
 
 import java.util.Date;
 import java.util.Scanner;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
 
-// SQLite
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 public class User {
     Integer id;
@@ -23,43 +16,28 @@ public class User {
 
     public User(String phone, Scanner scanner) {
         try {
-            Connect.runQuery("");
+            ResultSet user = Connect.runQuery("SELECT * from users WHERE phone=" + phone);
+
+            if (user.next()) {
+                // to prevent duplicate records
+                this.inDB = true;
+
+                // check permissions
+                String isStaff = user.getString("isStaff");
+                if (isStaff.equals("true")) {
+                    this.isStaff = true;
+                }
+
+                this.address = user.getString("addressString");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        // File file = new File("./data/users.csv");
-        // Scanner fileScanner;
-        // try {
-        //     fileScanner = new Scanner(file);
-        //     // process the file, one line at a time
-        //     while (fileScanner.hasNextLine()) {
-
-        //         // split the line on comma
-        //         String[] line = fileScanner.nextLine().split(",");
-
-        //         // check is required row is found
-        //         if (line[1].equals(phone)) {
-        //             // to prevent duplicate records
-        //             this.inDB = true;
-        //             // check permissions
-        //             if (line[4].equals("true")) {
-        //                 this.isStaff = true;
-        //             }
-        //             this.address = line[2];
-        //         }
-
-        //     }
-        // } catch (FileNotFoundException e) {
-        //     e.printStackTrace();
-        // }
-
-        // this.id = Utils.getNewId("./data/users.csv");
         this.phone = phone;
         this.address = getOrAddAddress(phone, scanner);
         this.timestamp = new Date();
 
-        addUserToFile(this);
+        addUserToDB(this);
     }
 
     public String getOrAddAddress(String phone, Scanner scanner) {
@@ -70,27 +48,20 @@ public class User {
         return Utils.getStringInRange("📍 Your Address: ", 1, 100, scanner);
     }
 
-    public void addUserToFile(User user) {
-        String data = user.csvString();
+    public void addUserToDB(User user) {
+        String data = this.csvString();
 
-        // if user was already found in db
         if (inDB)
             return;
-        try {
-            FileWriter writer = new FileWriter("./data/users.csv", true);
-            writer.write(data);
-            writer.write(System.getProperty("line.separator"));
-            writer.close();
-
-            this.inDB = true;
-        } catch (Exception e) {
-            e.getStackTrace();
+        if (this.phone != null) {
+            Connect.runQuery("INSERT INTO users (phone, addressString, timestampString, isStaff) VALUES " + data);
         }
+        this.inDB = true;
     }
 
     public String csvString() {
-        return this.id.toString() + "," + this.phone + "," + this.address.toString() + "," + this.timestamp + ","
-                + this.isStaff;
+        return "('" + this.phone + "', '" + this.address.toString() + "', '" + this.timestamp.toString() + "', '"
+                + this.isStaff + "')";
     }
 
 }

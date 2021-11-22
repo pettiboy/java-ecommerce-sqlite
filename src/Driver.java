@@ -1,5 +1,8 @@
 package src;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Scanner;
 import java.util.Vector;
 
@@ -7,8 +10,15 @@ public class Driver {
     static User user;
     static Order order;
     static Orders orders;
+    // static Connect connection;
 
     public static void main(String[] args) {
+        try {
+            new Connect();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         Scanner scanner = new Scanner(System.in);
         scanner.useDelimiter("\n");
 
