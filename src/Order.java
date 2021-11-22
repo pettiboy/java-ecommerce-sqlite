@@ -10,7 +10,7 @@ import java.util.Vector;
 public class Order {
     int id;
     User user;
-    Vector<Product> products = new Vector<>();
+    Vector<src.Product> products = new Vector<>();
     String dateOrdered;
     boolean complete;
 

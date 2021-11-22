@@ -6,6 +6,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 
+// SQLite
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 public class User {
     Integer id;
     String phone;
@@ -15,34 +22,39 @@ public class User {
     private boolean inDB = false;
 
     public User(String phone, Scanner scanner) {
-
-        File file = new File("./data/users.csv");
-        Scanner fileScanner;
         try {
-            fileScanner = new Scanner(file);
-            // process the file, one line at a time
-            while (fileScanner.hasNextLine()) {
-
-                // split the line on comma
-                String[] line = fileScanner.nextLine().split(",");
-
-                // check is required row is found
-                if (line[1].equals(phone)) {
-                    // to prevent duplicate records
-                    this.inDB = true;
-                    // check permissions
-                    if (line[4].equals("true")) {
-                        this.isStaff = true;
-                    }
-                    this.address = line[2];
-                }
-
-            }
-        } catch (FileNotFoundException e) {
+            Connect.runQuery("");
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        this.id = Utils.getNewId("./data/users.csv");
+        // File file = new File("./data/users.csv");
+        // Scanner fileScanner;
+        // try {
+        //     fileScanner = new Scanner(file);
+        //     // process the file, one line at a time
+        //     while (fileScanner.hasNextLine()) {
+
+        //         // split the line on comma
+        //         String[] line = fileScanner.nextLine().split(",");
+
+        //         // check is required row is found
+        //         if (line[1].equals(phone)) {
+        //             // to prevent duplicate records
+        //             this.inDB = true;
+        //             // check permissions
+        //             if (line[4].equals("true")) {
+        //                 this.isStaff = true;
+        //             }
+        //             this.address = line[2];
+        //         }
+
+        //     }
+        // } catch (FileNotFoundException e) {
+        //     e.printStackTrace();
+        // }
+
+        // this.id = Utils.getNewId("./data/users.csv");
         this.phone = phone;
         this.address = getOrAddAddress(phone, scanner);
         this.timestamp = new Date();
