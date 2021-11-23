@@ -28,7 +28,7 @@ public class User {
                     this.isStaff = true;
                 }
 
-                this.address = user.getString("addressString");
+                this.address = user.getString("address");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -54,7 +54,7 @@ public class User {
         if (inDB)
             return;
         if (this.phone != null) {
-            Connect.runQuery("INSERT INTO users (phone, addressString, timestampString, isStaff) VALUES " + data);
+            Connect.runQuery("INSERT INTO users (phone, address, timestamp, isStaff) VALUES " + data);
         }
         this.inDB = true;
     }

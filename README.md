@@ -31,8 +31,8 @@ CREATE TABLE otps(
 CREATE TABLE users(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     phone TEXT NOT NULL,
-    addressString TEXT NOT NULL,
-    timestampString TEXT NOT NULL,
+    address TEXT NOT NULL,
+    timestamp TEXT NOT NULL,
     isStaff TEXT NOT NULL
 );
 ```

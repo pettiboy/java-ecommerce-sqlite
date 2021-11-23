@@ -10,7 +10,7 @@ public class Products {
     Vector<Product> products = new Vector<>();
 
     /**
-     * on instantiation loads data from 'products.csv' to a vector called 'products'
+     * on instantiation loads data from the database to a vector called 'products'
      * in the class
      **/
     Products() {
