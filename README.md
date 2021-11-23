@@ -36,3 +36,15 @@ CREATE TABLE users(
     isStaff TEXT NOT NULL
 );
 ```
+
+### products
+
+```sql
+CREATE TABLE products(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    price TEXT NOT NULL,
+    description TEXT NOT NULL,
+    isActive TEXT NOT NULL
+);
+```

@@ -1,5 +1,7 @@
 package src;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.Random;
 
 
@@ -36,13 +38,12 @@ public class PhoneOtp {
 
         // make API request to otp provider
         // create/update a file 'otp.csv' and print inside it 'phone,otp'
-        // try (PrintWriter writer = new PrintWriter("./data/otp.csv")) {
-        //     writer.write(phone + ',' + otp);
-        // } catch (FileNotFoundException e) {
-        //     System.out.println(e);
-        //     return false;
-        // }
-        Print.print(otp);
+        try (PrintWriter writer = new PrintWriter("./data/otp.csv")) {
+            writer.write(phone + ',' + otp);
+        } catch (FileNotFoundException e) {
+            System.out.println(e);
+            return false;
+        }
         return true;
     }
 

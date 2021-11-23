@@ -76,7 +76,7 @@ public class Order {
     }
 
     public String csvString(Order order) {
-        this.id = Utils.getNewId("./data/orders.csv");
+        this.id = Utils.getNextId("orders");
 
         String lineSeperatedProductIds = "";
         for (Product product: order.products) {

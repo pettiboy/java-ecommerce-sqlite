@@ -14,6 +14,7 @@ import java.sql.Statement;
 public class Connect {
     static Connection sqlConnection;
 
+    // connect with database on instantiation
     Connect() throws SQLException {
         Path currentRelativePath = Paths.get("");
         String absolutePath = currentRelativePath.toAbsolutePath().toString();

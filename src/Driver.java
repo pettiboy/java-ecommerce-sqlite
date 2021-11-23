@@ -1,7 +1,5 @@
 package src;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 import java.util.Vector;
@@ -13,10 +11,13 @@ public class Driver {
     // static Connect connection;
 
     public static void main(String[] args) {
+
+        // connect with database
         try {
             new Connect();
         } catch (SQLException e) {
             e.printStackTrace();
+            return;
         }
 
         Scanner scanner = new Scanner(System.in);
@@ -39,6 +40,9 @@ public class Driver {
         options.add("Add New Product To Catalogue");
         options.add("View All Completed Orders");
         options.add("View Completed Order Cart");
+
+        // admin features
+        options.add("Add Staff Member");
 
         // utils (no auth req)
         options.add("See options");
@@ -123,11 +127,6 @@ public class Driver {
 
                 break;
 
-            case 9:
-                // show options
-                Utils.showOptions(options);
-                break;
-
             case 8:
                 // view order details
                 if (user == null) {
@@ -139,6 +138,22 @@ public class Driver {
                 } else {
                     Print.print("You do not have permission to view order details.", Print.YELLOW);
                 }
+                break;
+            
+            case 9:
+                // Add Staff Member
+                if (user == null) {
+                    Print.print("Login to explore this feature...", Print.YELLOW);
+                } else if (user.isStaff) {
+                    user.makeStaff(scanner);
+                } else {
+                    Print.print("You do not have permission to add a staff member.", Print.YELLOW);
+                }
+                break;
+            
+            case 10:
+                // show options
+                Utils.showOptions(options);
                 break;
 
             default:

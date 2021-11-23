@@ -2,10 +2,9 @@ package src;
 
 import java.util.Scanner;
 import java.util.Vector;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class Products {
     Vector<Product> products = new Vector<>();
@@ -15,24 +14,15 @@ public class Products {
      * in the class
      **/
     Products() {
-        File file = new File("./data/products.csv");
-        Scanner fileScanner;
+        ResultSet products = Connect.runQuery("SELECT * FROM products WHERE isActive = 'true'");
+
         try {
-            fileScanner = new Scanner(file);
-            // process the file, one line at a time
-            while (fileScanner.hasNextLine()) {
-                String[] line = fileScanner.nextLine().split(",");
-                if (line[4].equals("true")) {
-                    Product product = new Product(
-                                        Integer.parseInt(line[0]), 
-                                        line[1], 
-                                        Double.parseDouble(line[2]),
-                                        line[3]);
-                    this.products.add(product);
-                }
+            while (products.next()) {
+                Product product = new Product(Integer.parseInt(products.getString("id")), products.getString("name"),
+                        Double.parseDouble(products.getString("price")), products.getString("description"));
+                this.products.add(product);
             }
-            fileScanner.close();
-        } catch (FileNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -42,7 +32,7 @@ public class Products {
     }
 
     public Product productIdToProduct(int productId) {
-        for (Product product: products) {
+        for (Product product : products) {
             if (product.id == productId) {
                 return product;
             }
@@ -51,32 +41,27 @@ public class Products {
     }
 
     public void addProduct(Scanner scanner) {
-        int id = Utils.getNewId("./data/products.csv");
         String name = Utils.getStringInRange("Product Name: ", 1, 30, scanner);
         Double price = Utils.getDoubleInRange("Product Price: ", 1.0, 1000.0, scanner);
         String description = Utils.getStringInRange("Product Description: ", 1, 100, scanner);
+        int id = Utils.getNextId("products");
 
         Product product = new Product(id, name, price, description);
         this.products.add(product);
-        addProductToFile(product);
+        addProductToDB(product);
     }
 
-    public void addProductToFile(Product product) {
+    public void addProductToDB(Product product) {
         String data = product.csvString();
         try {
-            // Creates a Writer using FileWriter
-            FileWriter writer = new FileWriter("./data/products.csv", true);
-            // Writes string and line seperator to the file
-            writer.write(data);
-            writer.write(System.getProperty("line.separator"));
-            // Closes the writer
-            writer.close();
+            Connect.runQuery("INSERT INTO products (name, price, description, isActive) VALUES " + data);
         } catch (Exception e) {
             e.getStackTrace();
         }
     }
 
-    
+    // deactivate product
+
 }
 
 class Product {
@@ -99,7 +84,7 @@ class Product {
     }
 
     public String csvString() {
-        return this.id.toString() + "," + this.name + "," + this.price.toString() + "," + this.description + ","
-                + this.isActive;
+        return "('" + this.name + "', '" + this.price.toString() + "', '" + this.description + "', '" + this.isActive
+                + "')";
     }
 }

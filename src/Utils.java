@@ -5,8 +5,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Vector;
-import java.io.File;
+
 import java.math.BigInteger;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class Utils {
 
@@ -120,23 +123,18 @@ public class Utils {
         return validDouble;
     }
 
-    // file management
-    public static int getNewId(String fileName) {
-        // try {
-        // return Files.lines(new File(fileName).toPath(),
-        // Charset.defaultCharset()).count() + 1;
-        // } catch (Exception e) {
-        // e.getStackTrace();
-        // }
-        // return 100000;
-        File file = new File(fileName);
-        String[] lastRow = LastLine.tail(file).split(",");
+    public static int getNextId(String table) {
+        // the next id will be exactly the next interger, which is not guaranteed, only that it'll be larger than that.
+        ResultSet result = Connect.runQuery("SELECT * FROM SQLITE_SEQUENCE WHERE name='" + table + "';");
         try {
-            int lastId = Integer.parseInt(lastRow[0]);
-            return lastId + 1;
-        } catch (Exception e) {
-            return 1;
+            while (result.next()) {
+                int id = Integer.parseInt(result.getString("seq")) + 1;
+                return id;
+            }
+        } catch (NumberFormatException | SQLException e) {
+            e.printStackTrace();
         }
+        return 1;
     }
 
 }

@@ -59,6 +59,12 @@ public class User {
         this.inDB = true;
     }
 
+    // make staff
+    public void makeStaff(Scanner scanner) {
+        String phone = "" + Utils.getBigIntInRange("📞 Phone: ", 10, 10, scanner);
+        Connect.runQuery("UPDATE users SET isStaff = 'true' WHERE phone = '" + phone + "'");
+    }
+
     public String csvString() {
         return "('" + this.phone + "', '" + this.address.toString() + "', '" + this.timestamp.toString() + "', '"
                 + this.isStaff + "')";
