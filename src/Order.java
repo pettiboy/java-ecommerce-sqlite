@@ -1,7 +1,7 @@
 package src;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.Vector;
@@ -79,12 +79,6 @@ public class Order {
     }
 
     public String csvString(Order order) {
-        // String lineSeperatedProductIds = "";
-        // for (Product product: order.products) {
-        // lineSeperatedProductIds += "|" + product.id;
-        // }
-        // return "" + order.id + "," + order.user.phone + "," + lineSeperatedProductIds
-        // + "," + order.dateOrdered + "," + order.complete;
         return "(" + order.user.id + ", '" + order.dateOrdered + "', '" + order.complete + "');";
     }
 
@@ -95,38 +89,37 @@ class Orders {
 
     Orders() {
         Products products = new Products();
-
-        File file = new File("./data/orders.csv");
-        Scanner fileScanner;
         try {
-            fileScanner = new Scanner(file);
-            // process the file, one line at a time
-            while (fileScanner.hasNextLine()) {
-                String[] line = fileScanner.nextLine().split(",");
+            // get all completed orders
+            ResultSet allOrders = Connect.runQuery("SELECT * FROM orders WHERE complete = 'true';");
+            // loop over allOrders
+            while (allOrders.next()) {
+                Print.print(allOrders.getString("userId"));
+                // get user and product
+                User user = new User(allOrders.getString("userId"), new Scanner(System.in));
+                Order order = new Order(user);
 
-                if (line[4].equals("true")) {
-                    User user = new User(line[1], new Scanner(System.in));
-                    Order order = new Order(user);
-                    order.id = Integer.parseInt(line[0]);
-                    String[] allProductIds = line[2].split("|");
-                    for (String productId : allProductIds) {
-                        if (productId.equals("|")) {
-                            continue;
-                        }
-                        Product selectedProduct = products.productIdToProduct(Integer.parseInt(productId));
-                        order.addToCart(selectedProduct);
-                    }
+                order.id = Integer.parseInt(allOrders.getString("id"));
 
-                    order.dateOrdered = line[3];
-                    order.complete = Boolean.parseBoolean(line[4]);
-
-                    this.orders.add(order);
+                // get all product ids for this product
+                ResultSet allProductIds = Connect.runQuery("SELECT productId FROM order_product WHERE orderId = "+ order.id + ";");
+                // loop over each productId
+                while (allProductIds.next()) {
+                    // convert productId to Product object
+                    Product selectedProduct = products.productIdToProduct(Integer.parseInt(allProductIds.getString("productId")));
+                    // add that product to cart
+                    order.addToCart(selectedProduct);
                 }
-            }
-            fileScanner.close();
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+                // save order's date and complete states
+                order.dateOrdered = allOrders.getString("dateOrdered");
+                order.complete = Boolean.parseBoolean(allOrders.getString("complete"));
+
+                // add order to orders vector
+                this.orders.add(order);
+            }
+        } catch (SQLException e1) {
+            e1.printStackTrace();
         }
     }
 

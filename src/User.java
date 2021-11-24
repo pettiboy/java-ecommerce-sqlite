@@ -14,12 +14,20 @@ public class User {
     boolean isStaff;
     private boolean inDB = false;
 
-    public User(String phone, Scanner scanner) {
+    public User(String phoneOrId, Scanner scanner) {
         try {
-            ResultSet user = Connect.runQuery("SELECT * from users WHERE phone=" + phone);
+            // this logic works only users are less than 99,99,99,999
+            ResultSet user;
+            if (phoneOrId.length() < 10) {
+                user = Connect.runQuery("SELECT * from users WHERE id=" + phoneOrId);
+            } else {
+                user = Connect.runQuery("SELECT * from users WHERE phone=" + phoneOrId);
+                this.phone = phoneOrId;
+            }
 
             if (user.next()) {
                 this.id = Integer.parseInt(user.getString("id"));
+                this.phone = user.getString("phone");
 
                 // to prevent duplicate records
                 this.inDB = true;
@@ -35,7 +43,7 @@ public class User {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        this.phone = phone;
+
         this.address = getOrAddAddress(phone, scanner);
         this.timestamp = new Date();
 
