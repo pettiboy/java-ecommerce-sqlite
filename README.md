@@ -63,7 +63,9 @@ CREATE TABLE orders(
 CREATE TABLE order_product (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     orderId INTEGER NOT NULL,
-    productId INTEGER NOT NULL
+    productId INTEGER NOT NULL,
+    FOREIGN KEY(orderId) REFERENCES orders(id),
+    FOREIGN KEY(productId) REFERENCES products(id)
 );
 ```
 
