@@ -44,7 +44,7 @@ public class Order {
 
             if (value.equals("y")) {
                 addOrderToDB();
-                Print.print("✅ Order Placed.", Print.GREEN);
+                Print.print("Order Placed ✅", Print.GREEN);
             }
         } else {
             Print.print("Make sure you add products to your cart first...", Print.YELLOW);
@@ -60,6 +60,9 @@ public class Order {
     }
 
     public void addOrderToDB() {
+        if (this.user.id == null)
+            return;
+
         String data = this.csvString(this);
 
         Connect.runQuery("INSERT INTO orders (userId, dateOrdered, complete) VALUES " + data);

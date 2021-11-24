@@ -57,14 +57,17 @@ public class User {
             return;
         if (this.phone != null) {
             Connect.runQuery("INSERT INTO users (phone, address, timestamp, isStaff) VALUES " + data);
+            this.id = Connect.getPrevRowId();
         }
         this.inDB = true;
     }
 
-    // make staff
     public void makeStaff(Scanner scanner) {
+        // to make sure only staff can make other user staff
+        // is checked in Driver.java
         String phone = "" + Utils.getBigIntInRange("📞 Phone: ", 10, 10, scanner);
         Connect.runQuery("UPDATE users SET isStaff = 'true' WHERE phone = '" + phone + "'");
+        Print.print("User " + phone + " is now staff ✅");
     }
 
     public String csvString() {

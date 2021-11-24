@@ -55,6 +55,7 @@ public class Products {
         String data = product.csvString();
         try {
             Connect.runQuery("INSERT INTO products (name, price, description, isActive) VALUES " + data);
+            Print.print("Product Added ✅");
         } catch (Exception e) {
             e.getStackTrace();
         }

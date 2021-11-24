@@ -49,7 +49,6 @@ public class Connect {
             statement = sqlConnection.createStatement();
             ResultSet rowId = statement.executeQuery("select last_insert_rowid();");
             if (rowId.next()) {
-                System.out.println(rowId.getString(1));
                 return Integer.parseInt(rowId.getString(1));
             }
             // return rowId;
