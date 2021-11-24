@@ -42,4 +42,20 @@ public class Connect {
         }
         return null;
     }
+
+    public static int getPrevRowId() { 
+        Statement statement;
+        try {
+            statement = sqlConnection.createStatement();
+            ResultSet rowId = statement.executeQuery("select last_insert_rowid();");
+            if (rowId.next()) {
+                System.out.println(rowId.getString(1));
+                return Integer.parseInt(rowId.getString(1));
+            }
+            // return rowId;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }

@@ -2,7 +2,6 @@ package src;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.Vector;
@@ -17,7 +16,7 @@ public class Order {
     Order(User user) {
         this.user = user;
     }
-    
+
     // add items to order (cart)
     public void addToCart(Product product) {
         this.products.add(product);
@@ -38,13 +37,13 @@ public class Order {
         if (this.products.size() > 0) {
             this.dateOrdered = new Date().toString();
             this.complete = true;
-            
+
             Print.print("Your order total is: ₹" + getCartTotal(this), Print.YELLOW);
 
             String value = Utils.getStringInRange("Press 'y' to place your order:  ", 1, 1, scanner);
 
-            if (value.equals("y"))  {
-                addOrderToFile();
+            if (value.equals("y")) {
+                addOrderToDB();
                 Print.print("✅ Order Placed.", Print.GREEN);
             }
         } else {
@@ -54,35 +53,36 @@ public class Order {
 
     public Double getCartTotal(Order order) {
         Double total = (double) 0;
-        for (Product product: this.products) {
+        for (Product product : this.products) {
             total += product.price;
         }
         return total;
     }
 
-    public void addOrderToFile() {
+    public void addOrderToDB() {
         String data = this.csvString(this);
+
+        Connect.runQuery("INSERT INTO orders (userId, dateOrdered, complete) VALUES " + data);
+        int dbOrderId = Connect.getPrevRowId();
+
         try {
-            // Creates a Writer using FileWriter
-            FileWriter writer = new FileWriter("./data/orders.csv", true);
-            // Writes string and line seperator to the file
-            writer.write(data);
-            writer.write(System.getProperty("line.separator"));
-            // Closes the writer
-            writer.close();
+            for (Product product : this.products) {
+                Connect.runQuery("INSERT INTO order_product (orderId, productId) VALUES (" + dbOrderId + ", '"
+                        + product.id + "')");
+            }
         } catch (Exception e) {
             e.getStackTrace();
         }
     }
 
     public String csvString(Order order) {
-        this.id = Utils.getNextId("orders");
-
-        String lineSeperatedProductIds = "";
-        for (Product product: order.products) {
-            lineSeperatedProductIds += "|" + product.id;
-        } 
-        return "" + order.id + "," + order.user.phone + "," + lineSeperatedProductIds  + "," +  order.dateOrdered  + "," +  order.complete;
+        // String lineSeperatedProductIds = "";
+        // for (Product product: order.products) {
+        // lineSeperatedProductIds += "|" + product.id;
+        // }
+        // return "" + order.id + "," + order.user.phone + "," + lineSeperatedProductIds
+        // + "," + order.dateOrdered + "," + order.complete;
+        return "(" + order.user.id + ", '" + order.dateOrdered + "', '" + order.complete + "');";
     }
 
 }
@@ -107,7 +107,9 @@ class Orders {
                     order.id = Integer.parseInt(line[0]);
                     String[] allProductIds = line[2].split("|");
                     for (String productId : allProductIds) {
-                        if (productId.equals("|")) {continue;}
+                        if (productId.equals("|")) {
+                            continue;
+                        }
                         Product selectedProduct = products.productIdToProduct(Integer.parseInt(productId));
                         order.addToCart(selectedProduct);
                     }
@@ -128,10 +130,10 @@ class Orders {
     public Vector<Order> getAllOrders() {
         return this.orders;
     }
-    
+
     public void printCartOf(int orderId) {
         Order useOrder;
-        for (Order order: this.orders) {
+        for (Order order : this.orders) {
             if (order.id == orderId) {
                 useOrder = order;
                 useOrder.getCartItems();

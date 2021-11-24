@@ -19,6 +19,8 @@ public class User {
             ResultSet user = Connect.runQuery("SELECT * from users WHERE phone=" + phone);
 
             if (user.next()) {
+                this.id = Integer.parseInt(user.getString("id"));
+
                 // to prevent duplicate records
                 this.inDB = true;
 

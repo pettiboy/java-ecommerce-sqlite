@@ -33,6 +33,10 @@ public class Print {
     public static void print(String printThis, String color) {
         System.out.println(color + printThis + RESET);
     }
+    
+    public static void print(int printThis, String color) {
+        System.out.println(color + printThis + RESET);
+    }
 
     public static void print(Integer printThis) {
         System.out.println(printThis);

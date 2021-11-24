@@ -48,3 +48,25 @@ CREATE TABLE products(
     isActive TEXT NOT NULL
 );
 ```
+
+### orders
+
+```sql
+CREATE TABLE orders(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    userId INTEGER NOT NULL,
+    dateOrdered TEXT NOT NULL,
+    complete TEXT NOT NULL,
+    FOREIGN KEY(userId) REFERENCES users(id)
+);
+
+CREATE TABLE order_product (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    orderId INTEGER NOT NULL,
+    productId INTEGER NOT NULL
+);
+```
+
+#### Why am I using TEXT instead of other datatypes?
+
+This is because the values will be returned as `String` either way in `java`.

@@ -139,7 +139,7 @@ public class Driver {
                     Print.print("You do not have permission to view order details.", Print.YELLOW);
                 }
                 break;
-            
+
             case 9:
                 // Add Staff Member
                 if (user == null) {
@@ -150,7 +150,7 @@ public class Driver {
                     Print.print("You do not have permission to add a staff member.", Print.YELLOW);
                 }
                 break;
-            
+
             case 10:
                 // show options
                 Utils.showOptions(options);
