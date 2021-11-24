@@ -94,7 +94,6 @@ class Orders {
             ResultSet allOrders = Connect.runQuery("SELECT * FROM orders WHERE complete = 'true';");
             // loop over allOrders
             while (allOrders.next()) {
-                Print.print(allOrders.getString("userId"));
                 // get user and product
                 User user = new User(allOrders.getString("userId"), new Scanner(System.in));
                 Order order = new Order(user);
