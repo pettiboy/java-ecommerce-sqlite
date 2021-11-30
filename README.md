@@ -15,13 +15,13 @@ run the main method in `src/Driver.java`
 
 ## Tables
 
-### otp
+### phone_otp
 
 ```sql
-CREATE TABLE otps(
+CREATE TABLE phone_otp(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    phone INT NOT NULL,
-    otp INT NOT NULL
+    phone TEXT NOT NULL,
+    otp INTEGER NOT NULL
 );
 ```
 
@@ -34,12 +34,6 @@ CREATE TABLE users(
     address TEXT NOT NULL,
     timestamp TEXT NOT NULL,
     isStaff TEXT NOT NULL
-);
-
-CREATE TABLE phone_otp(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    phone TEXT NOT NULL,
-    otp INTEGER NOT NULL
 );
 ```
 
