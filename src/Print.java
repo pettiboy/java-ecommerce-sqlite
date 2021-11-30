@@ -8,7 +8,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
-public class Print {
+interface Printer {
+    public static void print() {}
+    public static void printOrders() {}
+}
+
+public class Print implements Printer {
     // ANSI codes: https://stackoverflow.com/a/5762502/14225169
     public static final String RESET = "\u001B[0m";
     public static final String RED = "\u001B[31m";
@@ -16,8 +21,6 @@ public class Print {
     public static final String YELLOW = "\u001B[33m";
     public static final String PURPLE = "\u001B[35m";
     public static final String CYAN = "\u001B[36m";
-    // public static final String BLACK = "\u001B[30m";
-    // public static final String BLUE = "\u001B[34m";
 
     // handle printing to console using method overloading
     public static void print(String printThis, boolean noNewLine) {
