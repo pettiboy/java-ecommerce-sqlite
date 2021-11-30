@@ -62,6 +62,14 @@ public class Products {
     }
 
     // deactivate product
+    public void removeProduct(int productId) {
+        try {
+            Connect.runQuery("UPDATE products SET isActive = 'false' WHERE id = " + productId + ";");
+            Print.print("Product " + productId + " removed." + Print.PURPLE);
+        } catch (Exception e) {
+            e.getStackTrace();
+        }
+    }
 
 }
 

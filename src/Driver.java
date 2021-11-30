@@ -8,6 +8,7 @@ public class Driver {
     static User user;
     static Order order;
     static Orders orders;
+    static Products products;
 
     public static void main(String[] args) {
 
@@ -42,12 +43,13 @@ public class Driver {
 
         // admin features
         options.add("Add Staff Member");
+        options.add("Remove Product From Catalogue");
 
         // utils (no auth req)
         options.add("See options");
         options.add("Exit");
 
-        Products products = new Products();
+        products = new Products();
         Utils.showOptions(options);
         boolean flag = true;
         while (flag) {
@@ -149,8 +151,21 @@ public class Driver {
                     Print.print("You do not have permission to add a staff member.", Print.YELLOW);
                 }
                 break;
-
+            
             case 10:
+                // Remove product from DB
+                if (user == null) {
+                    Print.print("Login to explore this feature...", Print.YELLOW);
+                } else if (user.isStaff) {
+                    int productId = Utils.getIntInRange("Product ID to remove: ", 1, 10, scanner);
+                    products.removeProduct(productId);
+                    products = new Products();
+                } else {
+                    Print.print("You do not have permission to remove product from catalogue.", Print.YELLOW);
+                }
+                break;
+
+            case 11:
                 // show options
                 Utils.showOptions(options);
                 break;
