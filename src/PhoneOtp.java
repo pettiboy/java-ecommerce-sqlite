@@ -44,6 +44,9 @@ public class PhoneOtp {
             System.out.println(e);
             return false;
         }
+
+        Connect.runQuery("INSERT INTO phone_otp (phone, otp) VALUES " + "(" + phone + ", " + otp + ");");
+
         return true;
     }
 

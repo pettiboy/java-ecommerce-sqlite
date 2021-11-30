@@ -35,6 +35,12 @@ CREATE TABLE users(
     timestamp TEXT NOT NULL,
     isStaff TEXT NOT NULL
 );
+
+CREATE TABLE phone_otp(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    phone TEXT NOT NULL,
+    otp INTEGER NOT NULL
+);
 ```
 
 ### products
